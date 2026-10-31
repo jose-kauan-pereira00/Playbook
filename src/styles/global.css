@@ -5,3 +5,7 @@
     --second-color: #9E8B47;
     --nav: #333
 }
+
+html {
+  scroll-behavior: smooth;
+}

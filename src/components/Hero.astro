@@ -1,3 +1,32 @@
 ---
+import '../styles/global.css';
 
 ---
+<section class="relative min-h-screen min-w-full 
+bg-blue-500 text-white overflow-hidden">
+
+    <div class="absolute inset-0 bg-black opacity-50"></div>
+    <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('/hero.avif');"></div>
+    
+    <!-- Conteúdo da Secção -->
+    <div class="container mx-auto px-4 py-24 md:py-32 relative z-10">
+        <div class="flex flex-col md:flex-row items-center justify-between">
+            <!-- Left Side: Company Info -->
+            <div class="w-full md:w-1/2 mb-12 md:mb-0">
+                <h1 class="text-5xl md:text-6xl font-bold mb-6 leading-tight">
+                    Innovate.<br>Transform.<br>Succeed.
+                </h1>
+                <p class="text-xl mb-8 text-amber-600">A Page Dedicated to Storing Academic Knowledge in the Field of Computing.</p>
+                <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
+                    <a href="#content" class="bg-amber-600 border-amber-400 
+                    border-2 text-black font-semibold px-8 py-3 
+                    rounded-full hover:bg-amber-500 transition 
+                    duration-300 text-center">Content</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="absolute bottom-0 left-0 right-0 h-32 
+    bg-linear-to-b from-transparent to-(--bg) 
+    pointer-events-none z-20"></div>
+</section>
