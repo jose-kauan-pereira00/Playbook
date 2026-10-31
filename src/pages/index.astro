@@ -1,23 +1,15 @@
 ---
 import '../styles/global.css';
-import Navegacao from '../components/Navegacao.astro'
-import Footer  from '../components/Footer.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Content from '../components/Content.astro';
+import Hero from '../components/Hero.astro';
 ---
-<!DOCTYPE html>
-<html lang="en">
-<head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Estudos - Index</title>
-</head>
-<body>
-	<Navegacao />
-	<section class="conteudos">
-		<div>
 
-		</div>
-	</section>
-	<Footer />
-	
-</body>
-</html>
+<BaseLayout 
+title='Playbook - Computer Science'
+description='Site simples para guardar Conteúdo aprendido durante a faculdade e cursos' >
+
+    <Hero />
+    <Content />
+
+</BaseLayout>

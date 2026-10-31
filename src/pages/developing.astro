@@ -1,0 +1,221 @@
+---
+import '../styles/global.css';
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Developing</title>
+</head>
+<body>
+    <main class="scene" id="scene">
+  <div class="layer dim" id="dim" aria-hidden="true"></div>
+  <div class="layer lit" id="lit">
+    <section class="w-full max-w-xl text-center">
+      <p class="num" aria-label="Error 404">404</p>
+      <h1 class="title mt-6 text-3xl sm:text-4xl">It's dark in here</h1>
+      <p class="mx-auto mt-4 max-w-md text-base leading-7" style="color:var(--ink-soft)">
+        We couldn't find the page you requested. It may have been moved or 
+        is UNDER DEVELOPMENT. Use the light to find your way back.  </p>
+      <div class="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
+
+        <a href="/" class="btn btn-primary">Back to home</a>
+      </div>
+    </section>
+  </div>
+  <div class="glow" aria-hidden="true"></div>
+  <div class="vignette" aria-hidden="true"></div>
+  <p class="hint" id="hint">Move your mouse or finger to shine the light.</p>
+</main>
+</body>
+</html>
+
+<script>
+(function () {
+  var scene = document.getElementById('scene');
+  var lit = document.getElementById('lit');
+  var dim = document.getElementById('dim');
+  dim.innerHTML = lit.innerHTML;            
+  dim.setAttribute('inert', '');
+
+  var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduce) { return; }                   
+
+  var w = innerWidth, h = innerHeight;
+  addEventListener('resize', function () { w = innerWidth; h = innerHeight; });
+
+  var x = w / 2, y = h * 0.45, r = 0;
+  var tx = x, ty = y, tr = 0;
+  var wander = true, start = performance.now();
+  var radius = function () { return Math.max(170, Math.min(260, Math.min(w, h) * 0.38)); };
+  var R = radius();
+  setTimeout(function () { tr = R * 0.45; }, 350);
+  setTimeout(function () { tr = 0; }, 560);
+  setTimeout(function () { tr = R * 0.7; }, 760);
+  setTimeout(function () { tr = R; }, 950);
+  function move(e) {
+    wander = false;
+    tx = e.clientX; ty = e.clientY; tr = radius();
+    document.getElementById('hint').style.opacity = '0';
+  }
+  addEventListener('pointermove', move, { passive: true });
+  addEventListener('pointerdown', move, { passive: true });
+  function frame(t) {
+    if (wander) {
+      var s = t - start;
+      tx = w / 2 + Math.cos(s * 0.0007) * w * 0.24;
+      ty = h * 0.45 + Math.sin(s * 0.0011) * h * 0.13;
+      if (tr > 0) tr = radius();
+    }
+    x += (tx - x) * 0.14;
+    y += (ty - y) * 0.14;
+    r += (tr - r) * 0.12;
+    scene.style.setProperty('--x', x.toFixed(1) + 'px');
+    scene.style.setProperty('--y', y.toFixed(1) + 'px');
+    scene.style.setProperty('--r', Math.max(r, 0.1).toFixed(1) + 'px');
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+})();
+</script>
+
+<style>
+ 
+
+:root {
+  box-sizing: border-box;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  --room: #0a0c13;
+  --wall: #141826;
+  --beam: 255, 204, 128;
+  --ink: #fff4e0;
+  --ink-soft: #c9c2b4;
+  --accent: #ffb84d;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0
+}
+
+body {
+  background: var(--room);
+  color: var(--ink);
+  font-family: 'Instrument Sans', system-ui, sans-serif
+}
+
+.scene {
+  --x: 50%;
+  --y: 45%;
+  --r: 380px;
+  position: relative;
+  min-height: 100%;
+  overflow: hidden;
+  touch-action: none;
+  background: radial-gradient(120% 90% at 50% 40%, var(--wall), var(--room) 70%);
+}
+
+.layer {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem
+}
+
+.dim {
+  opacity: .13;
+  pointer-events: none
+}
+
+.lit {
+  -webkit-mask-image: radial-gradient(circle var(--r) at var(--x) var(--y), #000 0, rgba(0, 0, 0, .92) 38%, transparent 100%);
+  mask-image: radial-gradient(circle var(--r) at var(--x) var(--y), #000 0, rgba(0, 0, 0, .92) 38%, transparent 100%);
+}
+
+.lit:focus-within {
+  -webkit-mask-image: none;
+  mask-image: none
+}
+
+.glow {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  mix-blend-mode: screen;
+  background: radial-gradient(circle calc(var(--r)*1.35) at var(--x) var(--y), rgba(var(--beam), .17), transparent 70%);
+}
+
+.vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(closest-side at 50% 50%, transparent 55%, rgba(0, 0, 0, .65))
+}
+
+.num {
+  font-family: 'Syne', system-ui, sans-serif;
+  font-weight: 800;
+  line-height: .85;
+  letter-spacing: -.04em;
+  font-size: clamp(7rem, 30vw, 15rem);
+  color: transparent;
+  -webkit-text-stroke: 2px var(--accent);
+  text-shadow: 0 0 40px rgba(var(--beam), .35);
+}
+
+.title {
+  font-family: 'Syne', system-ui, sans-serif;
+  font-weight: 700;
+  letter-spacing: -.01em
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: .25rem;
+  border: 0;
+  cursor: pointer;
+  padding: .8rem 1.4rem;
+  font-weight: 600;
+  font-size: .95rem;
+  text-decoration: none;
+  transition: transform .15s ease, background .15s ease;
+}
+
+.btn:hover {
+  transform: translateY(-1px)
+}
+
+.btn:focus-visible {
+  outline: 3px solid #7dd3fc;
+  outline-offset: 3px
+}
+
+.btn-primary {
+  background: var(--accent);
+  color: #1a1200
+}
+
+.btn-ghost {
+  background: rgba(255, 255, 255, .08);
+  color: var(--ink);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .22)
+}
+
+.hint {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: max(1.25rem, env(safe-area-inset-bottom));
+  text-align: center;
+  font-size: .85rem;
+  color: var(--ink-soft);
+  pointer-events: none
+}
+</style>
